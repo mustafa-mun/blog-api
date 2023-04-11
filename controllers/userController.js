@@ -20,85 +20,69 @@ exports.users_get = (req, res, next) => {
 };
 // POST REQUEST
 exports.users_post = (req, res, next) => {
-  // This request needs html element for req.body
+  // This request needs html form for req.body
   async function createUser() {
     try {
       const user = new User({
         name: req.body.name,
       });
       const result = await user.save();
-      return result;
-    } catch (error) {
-      return next(error);
-    }
-  }
-
-  createUser()
-    .then((result) => {
-      res.json({
+      return res.json({
         user: result,
       });
-    })
-    .catch((error) => {
+    } catch (error) {
       res.json({
         error,
         status: 404,
       });
-    });
+    }
+  }
+
+  createUser();
 };
 // PUT REQUEST
-exports.users_update = (req, res, next) => {
-  // This request needs html element for req.body
+exports.users_update = (req, res) => {
+  // This request needs html form for req.body
   async function updateUser() {
     try {
       const newUser = {
         name: req.body.name,
-        _id: req.params.id,
+        _id: req.params.userId,
       };
       const result = await User.findOneAndUpdate(
-        { _id: req.params.id },
+        { _id: req.params.userId },
         newUser,
         { new: true }
       );
-      return result;
-    } catch (error) {
-      return next(error);
-    }
-  }
-
-  updateUser()
-    .then((result) => {
-      res.json({
-        user: result,
+      return res.json({
+        updated_user: result,
       });
-    })
-    .catch((error) => {
+    } catch (error) {
       res.json({
         error,
         status: 401,
       });
-    });
-};
-// DELETE REQUEST
-exports.users_delete = (req, res, next) => {
-  // This request needs html element for req.body
-  async function deleteUser() {
-    try {
-      await User.deleteOne({ _id: req.params.id });
-    } catch (error) {
-      return next(error);
     }
   }
 
-  deleteUser()
-    .then(() => {
-      res.json({
+  updateUser();
+};
+// DELETE REQUEST
+exports.users_delete = (req, res) => {
+  async function deleteUser() {
+    try {
+      const result = await User.deleteOne({ _id: req.params.userId });
+      return res.json({
+        deleted_user: result,
         status: 200,
       });
-    })
-    .catch((error) => {
-      res.json({
+    } catch (error) {
+      return res.json({
+        error,
         status: 401,
       });
-    });
+    }
+  }
+
+  deleteUser();
 };
