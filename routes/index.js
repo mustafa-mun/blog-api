@@ -1,28 +1,59 @@
 var express = require("express");
 var router = express.Router();
 
-/* GET home page. */
+/* API explanation. */
 router.get("/", function (req, res, next) {
   res.json({
     message: "Welcome to blog api",
     endpoints: {
       users: {
-        get: "/users",
-        post: "/users",
-        put: "/users/:userId",
-        delete: "/users/:userId",
+        get: {
+          endpoint: "/users",
+          explanation: "get all users",
+        },
+        post: {
+          endpoint: "/users",
+          explanation: "create new user",
+        },
+        put: {
+          endpoint: "/users/:userId",
+          explanation: "update user",
+        },
+        delete: {
+          endpoint: "/users/:userId",
+          explanation: "delete user",
+        },
       },
       posts: {
-        get: "/posts",
-        post: "/posts",
-        put: "/posts/:userId",
-        delete: "/posts/:userId",
+        get: {
+          endpoint: "/posts",
+          explanation: "get all posts",
+        },
+        post: {
+          endpoint: "/posts",
+          explanation: "create new post",
+        },
+        put: {
+          endpoint: "/posts/:postId",
+          explanation: "update post",
+        },
+        delete: {
+          endpoint: "/posts/:postId",
+          explanation: "delete post",
+        },
       },
       comments: {
-        get: "/comments",
-        post: "/comments",
-        put: "/comments/:userId",
-        delete: "/comments/:userId",
+        get: {
+          endpoint: "/posts/comments",
+          explanation: "get all comments",
+        },
+        get: {
+          endpoint: "/posts/:postId/comments",
+          explanation: "get comments on spesific post",
+        },
+        post: "/posts/comments",
+        put: "/posts/comments/:userId",
+        delete: "/posts/comments/:userId",
       },
     },
   });
