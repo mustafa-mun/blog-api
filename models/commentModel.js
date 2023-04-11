@@ -11,7 +11,7 @@ const CommentsSchema = new Schmea({
 });
 
 CommentsSchema.virtual("url").get(function () {
-  return `/comments/${this._id}`;
+  return `/posts/${this.post_id}/comments/${this._id}`;
 });
 
 module.exports = new mongoose.model("Comments", CommentsSchema);
