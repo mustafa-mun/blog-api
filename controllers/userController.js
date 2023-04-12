@@ -40,9 +40,7 @@ exports.users_post = (req, res, next) => {
 
   createUser();
 };
-// PUT REQUEST
 exports.users_update = (req, res) => {
-  // This request needs html form for req.body
   async function updateUser() {
     try {
       const newUser = {
@@ -54,32 +52,42 @@ exports.users_update = (req, res) => {
         newUser,
         { new: true }
       );
-      return res.json({
-        updated_user: result,
-      });
+      if (result) {
+        res.json({
+          updated_user: result,
+        });
+      } else {
+        res.status(404).json({
+          error: "User not found",
+        });
+      }
     } catch (error) {
       res.status(401).json({
         error,
-        status: 401,
       });
     }
   }
 
   updateUser();
 };
+
 // DELETE REQUEST
 exports.users_delete = (req, res) => {
   async function deleteUser() {
     try {
       const result = await User.deleteOne({ _id: req.params.userId });
-      return res.json({
-        deleted_user: result,
-        status: 200,
-      });
+      if (result.deletedCount === 1) {
+        return res.status(204).json({
+          deleted_user: result,
+        });
+      } else {
+        return res.status(404).json({
+          error: "User not found",
+        });
+      }
     } catch (error) {
-      return res.status(401).json({
+      return res.status(404).json({
         error,
-        status: 401,
       });
     }
   }
