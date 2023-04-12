@@ -3,6 +3,7 @@ const router = express.Router();
 
 const postsController = require("../controllers/postsController");
 const commentsController = require("../controllers/commentsController");
+// This is for authenticate tokens
 const authController = require("../controllers/authController");
 
 /* /posts ROUTES */
