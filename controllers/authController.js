@@ -56,22 +56,19 @@ passport.use(
 // Auth jwt token.
 exports.authenticateToken = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
+  // Search for token on header
   const token = authHeader && authHeader.split(" ")[1];
+  // Search for blacklisted tokens
   const list_token = await Token_Blacklist.findOne({
     blacklisted_token: token,
   });
   // Unauthorized
-  if (token == null)
+  if (token == null && list_token)
+    // Token is not found or blacklisted
     return res.status(401).json({
       error: "Invalid request.",
       message: "You are unauthorized.",
     });
-  if (list_token) {
-    return res.status(401).json({
-      error: "Invalid request.",
-      message: "You are unauthorized.",
-    });
-  }
 
   jwt.verify(token, process.env.JWT_SECRET_TOKEN_KEY, (err, user) => {
     if (err)
@@ -121,6 +118,7 @@ exports.post_signup = [
     }
     // Inputs are valid, create user
     try {
+      // Create a hashed password
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const hashedUser = new User({
         first_name: req.body.first_name,
@@ -128,11 +126,14 @@ exports.post_signup = [
         username: req.body.username,
         password: hashedPassword,
       });
+      // Save user to database
       const result = await hashedUser.save();
+      // Send newly created user
       res.json({
         user: result,
       });
     } catch (error) {
+      // Handle duplicate usernames
       if (error.code === 11000 && error.keyValue.username) {
         const errors = ["Username already exists!"];
         res.status(400).json({
@@ -160,27 +161,32 @@ exports.post_login = (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      return res.status(400).json({
-        message: "Invalid credentials provided.",
+      // User not found
+      return res.status(404).json({
+        message: "User not found",
       });
     }
     req.logIn(user, { session: false }, (err) => {
       if (err) {
         return next(err);
       }
+      // Sign a jwt token
       const token = jwt.sign(
         { id: user.id },
         process.env.JWT_SECRET_TOKEN_KEY,
         { expiresIn: "1h" }
       );
+      // Return the user and token
       return res.json({ user, token });
     });
   })(req, res, next);
 };
 
 exports.post_logout = async (req, res) => {
+  // Get token
   const token = req.headers.authorization.split(" ")[1];
   try {
+    // Add token on blacklist
     const blacklisted_token = new Token_Blacklist({
       blacklisted_token: token,
     });
