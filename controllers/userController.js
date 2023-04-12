@@ -31,7 +31,7 @@ exports.users_post = (req, res, next) => {
         user: result,
       });
     } catch (error) {
-      res.json({
+      res.status(404).json({
         error,
         status: 404,
       });
@@ -58,7 +58,7 @@ exports.users_update = (req, res) => {
         updated_user: result,
       });
     } catch (error) {
-      res.json({
+      res.status(401).json({
         error,
         status: 401,
       });
@@ -77,7 +77,7 @@ exports.users_delete = (req, res) => {
         status: 200,
       });
     } catch (error) {
-      return res.json({
+      return res.status(401).json({
         error,
         status: 401,
       });
