@@ -16,6 +16,12 @@ router.post("/signup", authController.post_signup);
 router.get("/login", authController.get_login);
 // POST REQUEST
 router.post("/login", authController.post_login);
+// POST REQUEST (PROTECTED ROUTE)
+router.post(
+  "/logout",
+  authController.authenticateToken,
+  authController.post_logout
+);
 // PUT REQUEST (PROTECTED ROUTE)
 router.put(
   "/:userId",

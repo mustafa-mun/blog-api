@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Token_Blacklist = require("../models/token_blacklistModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
@@ -8,6 +9,8 @@ const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 require("dotenv").config();
 const { body, validationResult } = require("express-validator");
+
+/* USE REFRESH TOKENS! */
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
@@ -50,23 +53,32 @@ passport.use(
   )
 );
 
-// auth jwt token.
-exports.authenticateToken = (req, res, next) => {
+// Auth jwt token.
+exports.authenticateToken = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
+  const list_token = await Token_Blacklist.findOne({
+    blacklisted_token: token,
+  });
   // Unauthorized
   if (token == null)
     return res.status(401).json({
       error: "Invalid request.",
       message: "You are unauthorized.",
     });
+  if (list_token) {
+    return res.status(401).json({
+      error: "Invalid request.",
+      message: "You are unauthorized.",
+    });
+  }
 
   jwt.verify(token, process.env.JWT_SECRET_TOKEN_KEY, (err, user) => {
     if (err)
       // Forbidden
       return res.status(403).json({
         error: "Invalid request.",
-        message: "Forbidden..",
+        message: "Forbidden.",
       });
     req.user = user;
     next(); // Pass the control to the next middleware
@@ -156,8 +168,29 @@ exports.post_login = (req, res, next) => {
       if (err) {
         return next(err);
       }
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_TOKEN_KEY);
+      const token = jwt.sign(
+        { id: user.id },
+        process.env.JWT_SECRET_TOKEN_KEY,
+        { expiresIn: "1h" }
+      );
       return res.json({ user, token });
     });
   })(req, res, next);
+};
+
+exports.post_logout = async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  try {
+    const blacklisted_token = new Token_Blacklist({
+      blacklisted_token: token,
+    });
+    const result = await blacklisted_token.save();
+    res.status(200).json({
+      result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error,
+    });
+  }
 };
