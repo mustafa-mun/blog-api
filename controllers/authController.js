@@ -63,7 +63,7 @@ exports.authenticateToken = async (req, res, next) => {
     blacklisted_token: token,
   });
   // Unauthorized
-  if (token == null && list_token)
+  if (token == null || list_token)
     // Token is not found or blacklisted
     return res.status(401).json({
       error: "Invalid request.",
