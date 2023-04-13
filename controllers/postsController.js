@@ -124,6 +124,30 @@ exports.posts_update = [
   },
 ];
 
+exports.posts_like_update = async (req, res) => {
+  try {
+    // Increment post like by 1
+    const result = await Posts.findByIdAndUpdate(
+      req.params.postId,
+      {
+        $inc: { likes: 1 },
+      },
+      { new: true }
+    );
+    // Handle post not found
+    if (!result) {
+      return res.status(404).json({
+        error: "Post not found!",
+      });
+    }
+    // Post updated, return updated document
+    return res.status(200).json({ post: result });
+  } catch (error) {
+    // Handle error.
+    return res.status(400).json({ error });
+  }
+};
+
 exports.posts_update_publish = async (req, res, next) => {
   try {
     const post = await Posts.findById(req.params.postId);
