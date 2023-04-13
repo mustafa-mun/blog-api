@@ -25,7 +25,7 @@ router.delete(
   postsController.posts_delete
 );
 
-/* /comments ROUTES */
+/* /posts/comments ROUTES */
 
 // GET REQUEST
 router.get("/comments/", commentsController.all_comments_get);
@@ -33,6 +33,11 @@ router.get("/:postId/comments/", commentsController.comments_get);
 // POST REQUEST (PROTECTED ROUTE)
 router.post(
   "/:postId/comments/",
+  authController.authenticateToken,
+  commentsController.comments_post
+);
+router.post(
+  "/:postId/comments/like",
   authController.authenticateToken,
   commentsController.comments_post
 );

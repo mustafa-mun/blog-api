@@ -18,9 +18,16 @@ exports.comments_get = (req, res) => {
 // POST REQUEST
 exports.comments_post = (req, res) => {
   res.json({
-    message: "NOT IMPLEMENTED: COMMENTS POST REQUEST",
+    message: "NOT IMPLEMENTED: CREATE COMMENT POST REQUEST",
   });
 };
+
+exports.comments_like_post = (req, res) => {
+  res.json({
+    message: "NOT IMPLEMENTED: COMMENTS LIKE POST REQUEST",
+  });
+};
+
 // PUT REQUEST
 exports.comments_update = (req, res) => {
   res.json({
