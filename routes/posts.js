@@ -23,6 +23,8 @@ router.put(
   authController.authenticateToken,
   postsController.posts_update_publish
 );
+// PUT REQUEST (NOT PROTECTED)
+router.put("/:postId/like", postsController.posts_like_update);
 // DELETE REQUEST (PROTECTED ROUTE)
 router.delete(
   "/:postId",
@@ -35,12 +37,8 @@ router.delete(
 // GET REQUEST
 router.get("/comments/", commentsController.all_comments_get);
 router.get("/:postId/comments/", commentsController.comments_get);
-// POST REQUEST (PROTECTED ROUTE)
-router.post(
-  "/:postId/comments/",
-  authController.authenticateToken,
-  commentsController.comments_post
-);
+// POST REQUEST
+router.post("/:postId/comments/", commentsController.comments_post);
 // PUT REQUEST (PROTECTED ROUTE)
 router.put(
   "/:postId/comments/:commentId",
