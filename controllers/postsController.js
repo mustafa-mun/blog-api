@@ -123,6 +123,13 @@ exports.posts_update = [
     }
   },
 ];
+
+exports.posts_update_publish = (req, res, next) => {
+  res.json({
+    message: "NOT IMPLEMENTED: PUBLISH POST PUT REQUEST",
+  });
+};
+
 // DELETE REQUEST
 exports.posts_delete = async (req, res) => {
   try {
