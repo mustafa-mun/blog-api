@@ -22,16 +22,25 @@ router.post(
   authController.authenticateToken,
   authController.post_logout
 );
-// PUT REQUEST (PROTECTED ROUTE)
+// PUT REQUEST (EXTRA PROTECTED ROUTE)
 router.put(
   "/:userId",
   authController.authenticateToken,
+  authController.isAdmin,
   userController.users_update
 );
-// DELETE REQUEST (PROTECTED ROUTE)
+// PUT REQUEST (EXTRA PROTECTED ROUTE)
+router.put(
+  "/:userId/adminship",
+  authController.authenticateToken,
+  authController.isAdmin,
+  userController.users_give_adminship_post
+);
+// DELETE REQUEST (EXTRA PROTECTED ROUTE)
 router.delete(
   "/:userId",
   authController.authenticateToken,
+  authController.isAdmin,
   userController.users_delete
 );
 
