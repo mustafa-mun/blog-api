@@ -66,6 +66,11 @@ router.get("/", function (req, res, next) {
           "explanation": "update post",
           "protected_route": true
         },
+        "put": {
+          "endpoint": "/posts/:postId/publish",
+          "explanation": "publish a post",
+          "protected_route": true
+        },
         "delete": {
           "endpoint": "/posts/:postId",
           "explanation": "delete post",
@@ -89,12 +94,17 @@ router.get("/", function (req, res, next) {
           "protected_route": true
         },
         "put": {
-          "endpoint": "/posts/:postId/comments/:userId",
+          "endpoint": "/posts/:postId/comments/:commentId",
           "explanation": "update a comment on a spesific post",
           "protected_route": true
         },
+        "put": {
+          "endpoint": "/posts/:postId/comments/:commentId/like",
+          "explanation": "like a comment on a spesific post",
+          "protected_route": true
+        },
         "delete": {
-          "endpoint": "/posts/:postId/comments/:userId",
+          "endpoint": "/posts/:postId/comments/:commentId",
           "explanation": "delete a comment on a spesific post",
           "protected_route": true
         }
