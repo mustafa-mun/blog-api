@@ -113,7 +113,7 @@ exports.post_signup = [
     if (!errors.isEmpty()) {
       // There are errors
       return res.json({
-        errors,
+        errors: errors.array(),
       });
     }
     // Inputs are valid, create user
@@ -129,7 +129,7 @@ exports.post_signup = [
       // Save user to database
       const result = await hashedUser.save();
       // Send newly created user
-      res.json({
+      res.status(200).json({
         user: result,
       });
     } catch (error) {
