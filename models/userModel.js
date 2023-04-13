@@ -6,6 +6,7 @@ const UserSchema = new Schmea({
   last_name: { type: String, required: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  is_admin: { type: Boolean, default: false },
 });
 
 module.exports = new mongoose.model("User", UserSchema);
