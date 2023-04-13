@@ -124,10 +124,28 @@ exports.posts_update = [
   },
 ];
 
-exports.posts_update_publish = (req, res, next) => {
-  res.json({
-    message: "NOT IMPLEMENTED: PUBLISH POST PUT REQUEST",
-  });
+exports.posts_update_publish = async (req, res, next) => {
+  try {
+    // Find post with id and update it's publised status.
+    const result = await Posts.findByIdAndUpdate(
+      req.params.postId,
+      { is_published: true, updated_at: Date.now() },
+      { new: true }
+    );
+    // Handle post is not found.
+    if (!result) {
+      return res.status(404).json({
+        error: "Post is not found!",
+      });
+    }
+    // Post updated, return updated post.
+    return res.status(200).json({
+      post: result,
+    });
+  } catch (error) {
+    // Handle error.
+    return res.status(400).json({ error });
+  }
 };
 
 // DELETE REQUEST
