@@ -38,7 +38,7 @@ router.get("/", function (req, res, next) {
         post: {
           endpoint: "/users/logout",
           explanation: "logout",
-          protected_route: false,
+          protected_route: true,
         },
         put: {
           endpoint: "/users/:userId",
@@ -75,7 +75,7 @@ router.get("/", function (req, res, next) {
         put: {
           endpoint: "/posts/:postId/like",
           explanation: "like a post",
-          protected_route: true,
+          protected_route: false,
         },
         delete: {
           endpoint: "/posts/:postId",
@@ -97,7 +97,7 @@ router.get("/", function (req, res, next) {
         post: {
           endpoint: "/posts/:postId/comments",
           explanation: "add a new comment to a spesific post",
-          protected_route: true,
+          protected_route: false,
         },
         put: {
           endpoint: "/posts/:postId/comments/:commentId",
@@ -107,7 +107,7 @@ router.get("/", function (req, res, next) {
         put: {
           endpoint: "/posts/:postId/comments/:commentId/like",
           explanation: "like a comment on a spesific post",
-          protected_route: true,
+          protected_route: false,
         },
         delete: {
           endpoint: "/posts/:postId/comments/:commentId",
