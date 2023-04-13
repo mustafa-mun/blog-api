@@ -104,16 +104,17 @@ exports.users_update = [
 // DELETE REQUEST
 exports.users_delete = async (req, res) => {
   try {
-    const result = await User.deleteOne({ _id: req.params.userId });
-    if (result.deletedCount === 1) {
-      return res.status(200).json({
-        deleted_user: result,
-      });
-    } else {
+    const result = await User.findOneAndDelete({ _id: req.params.userId });
+    if (!result) {
+      // Handle user not found
       return res.status(404).json({
-        error: "User not found",
+        error: "User not found!",
       });
     }
+    // User is deleted, return the deleted post
+    return res.status(200).json({
+      deleted_user: result,
+    });
   } catch (error) {
     return res.status(400).json({
       error,
