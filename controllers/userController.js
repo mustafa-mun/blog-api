@@ -1,4 +1,6 @@
 const User = require("../models/userModel");
+const bcrypt = require("bcryptjs");
+const { body, validationResult } = require("express-validator");
 
 // GET REQUEST
 exports.users_get = (req, res, next) => {
@@ -40,57 +42,81 @@ exports.users_post = (req, res, next) => {
 
   createUser();
 };
-exports.users_update = (req, res) => {
-  async function updateUser() {
-    try {
-      const newUser = {
-        name: req.body.name,
-        _id: req.params.userId,
-      };
-      const result = await User.findOneAndUpdate(
-        { _id: req.params.userId },
-        newUser,
-        { new: true }
-      );
-      if (result) {
-        res.json({
-          updated_user: result,
+
+exports.users_update = [
+  body("first_name", "firstname can't be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("last_name", "lastname can't be empty!")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("username", "username must be minimum 5 characters!")
+    .trim()
+    .isLength({ min: 5 })
+    .escape(),
+  body("password", "password must be minimum 8 characters!")
+    .trim()
+    .isLength({ min: 8 })
+    .escape(),
+  async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      // There are errors
+      return res.status(400).json({ errors: errors.array() });
+    } else {
+      // Inputs are valid, create updated user
+      try {
+        // Create a hashed password
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        // Update user
+        const result = await User.findByIdAndUpdate(
+          req.params.userId,
+          {
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            username: req.body.username,
+            password: hashedPassword,
+          },
+          { new: true }
+        );
+
+        if (!result) {
+          // Handle user not found
+          return res.status(404).json({ error: "User not found!" });
+        }
+        // User updated, send updated user
+        return res.status(200).json({
+          user: result,
         });
-      } else {
-        res.status(404).json({
-          error: "User not found",
+      } catch (error) {
+        // Handle error
+        return res.status(400).json({
+          error,
         });
       }
-    } catch (error) {
-      res.status(401).json({
-        error,
-      });
     }
-  }
-
-  updateUser();
-};
+  },
+];
 
 // DELETE REQUEST
-exports.users_delete = (req, res) => {
-  async function deleteUser() {
-    try {
-      const result = await User.deleteOne({ _id: req.params.userId });
-      if (result.deletedCount === 1) {
-        return res.status(204).json({
-          deleted_user: result,
-        });
-      } else {
-        return res.status(404).json({
-          error: "User not found",
-        });
-      }
-    } catch (error) {
+exports.users_delete = async (req, res) => {
+  try {
+    const result = await User.deleteOne({ _id: req.params.userId });
+    if (result.deletedCount === 1) {
+      return res.status(200).json({
+        deleted_user: result,
+      });
+    } else {
       return res.status(404).json({
-        error,
+        error: "User not found",
       });
     }
+  } catch (error) {
+    return res.status(400).json({
+      error,
+    });
   }
-
-  deleteUser();
 };
