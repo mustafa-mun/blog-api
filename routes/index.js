@@ -6,6 +6,12 @@ router.get("/", function (req, res, next) {
   const apiDoc = {
     message:
       "Welcome to my blog api. You can find the endpoints you can use below.",
+    glossary: {
+      endpoint: "The endpoint you can use",
+      explanation: "The explanation of endpoint",
+      protected_route: "You need to use a jwt token for this endpoints",
+      extra_protected_route: "You need to be an admin for this endpoints",
+    },
     endpoints: {
       users: {
         get: {
@@ -45,10 +51,18 @@ router.get("/", function (req, res, next) {
           explanation: "update user",
           protected_route: true,
         },
+        put: {
+          endpoint: "/users/:userId/adminship",
+          explanation:
+            "give another user adminship (if current user is an admin)",
+          protected_route: true,
+          extra_protected_route: true,
+        },
         delete: {
           endpoint: "/users/:userId",
           explanation: "delete user",
           protected_route: true,
+          extra_protected_route: true,
         },
       },
       posts: {
@@ -66,11 +80,13 @@ router.get("/", function (req, res, next) {
           endpoint: "/posts/:postId",
           explanation: "update post",
           protected_route: true,
+          extra_protected_route: true,
         },
         put: {
           endpoint: "/posts/:postId/publish",
           explanation: "publish a post",
           protected_route: true,
+          extra_protected_route: true,
         },
         put: {
           endpoint: "/posts/:postId/like",
@@ -81,6 +97,7 @@ router.get("/", function (req, res, next) {
           endpoint: "/posts/:postId",
           explanation: "delete post",
           protected_route: true,
+          extra_protected_route: true,
         },
       },
       comments: {
@@ -103,6 +120,7 @@ router.get("/", function (req, res, next) {
           endpoint: "/posts/:postId/comments/:commentId",
           explanation: "update a comment on a spesific post",
           protected_route: true,
+          extra_protected_route: true,
         },
         put: {
           endpoint: "/posts/:postId/comments/:commentId/like",
@@ -113,6 +131,7 @@ router.get("/", function (req, res, next) {
           endpoint: "/posts/:postId/comments/:commentId",
           explanation: "delete a comment on a spesific post",
           protected_route: true,
+          extra_protected_route: true,
         },
       },
     },
