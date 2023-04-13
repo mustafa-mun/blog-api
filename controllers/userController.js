@@ -42,7 +42,7 @@ exports.users_post = (req, res, next) => {
 
   createUser();
 };
-
+// PUT REQUEST
 exports.users_update = [
   body("first_name", "firstname can't be empty")
     .trim()
@@ -100,6 +100,33 @@ exports.users_update = [
     }
   },
 ];
+
+// PUT REQUEST
+exports.users_give_adminship_post = async (req, res) => {
+  // GIVE USER ADMINSHIP REQUEST
+  try {
+    // Find user
+    const user = await User.findById(req.params.userId);
+
+    // Handle user is not found
+    if (!user) {
+      return res.status(404).json({
+        error: "User is not found!",
+      });
+    }
+    // Check if user is already an admin
+    if (user.is_admin) {
+      return res.status(400).json({ error: "User is already an admin" });
+    }
+    // User is not an admin, give user adminship
+    user.is_admin = true;
+    const result = await user.save();
+    // Return updated user
+    return res.status(200).json({ user: result });
+  } catch (error) {
+    return res.status(400).json({ error });
+  }
+};
 
 // DELETE REQUEST
 exports.users_delete = async (req, res) => {
