@@ -190,6 +190,7 @@ exports.post_logout = async (req, res) => {
     const blacklisted_token = new Token_Blacklist({
       blacklisted_token: token,
     });
+    // Save blacklisted token on database
     const result = await blacklisted_token.save();
     res.status(200).json({
       result,
