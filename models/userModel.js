@@ -8,8 +8,4 @@ const UserSchema = new Schmea({
   password: { type: String, required: true },
 });
 
-UserSchema.virtual("url").get(function () {
-  return `/users/${this._id}`;
-});
-
 module.exports = new mongoose.model("User", UserSchema);

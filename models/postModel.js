@@ -12,8 +12,4 @@ const PostSchema = new Schmea({
   is_published: { type: Boolean, default: false },
 });
 
-PostSchema.virtual("url").get(function () {
-  return `/posts/${this._id}`;
-});
-
 module.exports = new mongoose.model("Posts", PostSchema);
