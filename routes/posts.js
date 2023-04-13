@@ -45,9 +45,9 @@ router.put(
   authController.authenticateToken,
   commentsController.comments_update
 );
+// PUT REQUEST (NOT PROTECTED)
 router.put(
   "/:postId/comments/:commentId/like",
-  authController.authenticateToken,
   commentsController.comments_like_post
 );
 // DELETE REQUEST (PROTECTED ROUTE)
