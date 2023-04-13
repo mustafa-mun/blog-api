@@ -4,14 +4,17 @@ const { body, validationResult } = require("express-validator");
 // GET REQUEST
 exports.posts_get = async (req, res) => {
   try {
+    // Find all posts and return them.
     const posts = await Posts.find({});
     return res.status(200).json({ posts });
   } catch (error) {
+    // Handle error.
     return res.status(400).json({ error });
   }
 };
 // POST REQUEST
 exports.posts_post = [
+  // Validate and sanitize inputs
   body("title", "Title should be at least 5 characters!")
     .trim()
     .isLength({ min: 5 })
@@ -42,7 +45,6 @@ exports.posts_post = [
       return res.status(400).json({ errors: errors.array() });
     } else {
       // Form data is valid create new post with form data.
-
       const post = new Posts({
         title: req.body.title,
         author: req.user.id,
@@ -50,6 +52,7 @@ exports.posts_post = [
         tags: req.body.tags,
       });
       try {
+        // Save post on database
         const result = await post.save();
         return res.status(200).json({
           post: result,
@@ -62,6 +65,7 @@ exports.posts_post = [
 ];
 // PUT REQUEST
 exports.posts_update = [
+  // Validate and sanitize inputs
   body("title", "Title should be at least 5 characters!")
     .trim()
     .isLength({ min: 5 })
@@ -91,9 +95,9 @@ exports.posts_update = [
       // There are errors
       return res.status(400).json({ errors: errors.array() });
     } else {
-      // Form data is valid, create new updated post
-
+      // Form data is valid
       try {
+        // Find post with it's id and update it with new data.
         const result = await Posts.findByIdAndUpdate(
           req.params.postId,
           {
@@ -113,6 +117,7 @@ exports.posts_update = [
         // Post updated, return updated post
         return res.status(200).json({ post: result });
       } catch (error) {
+        // Handle error
         return res.status(400).json({ error });
       }
     }
@@ -121,6 +126,7 @@ exports.posts_update = [
 // DELETE REQUEST
 exports.posts_delete = async (req, res) => {
   try {
+    // Find post with it's id and delete it.
     const result = await Posts.findOneAndDelete({ _id: req.params.postId });
     if (!result) {
       // Handle post not found
@@ -133,6 +139,7 @@ exports.posts_delete = async (req, res) => {
       deleted_post: result,
     });
   } catch (error) {
+    // Handle error
     return res.status(400).json({
       error,
     });
