@@ -77,9 +77,31 @@ exports.authenticateToken = async (req, res, next) => {
         error: "Invalid request.",
         message: "Forbidden.",
       });
-    req.user = user;
+    req.jwt_token = user;
     next(); // Pass the control to the next middleware
   });
+};
+
+// Middleware for checking if user is admin
+exports.isAdmin = async (req, res, next) => {
+  try {
+    const user = req.jwt_token.user;
+
+    if (!user) {
+      // User is not found
+      return res.status(404).json({ error: "User not found!" });
+    }
+
+    if (user.isAdmin) {
+      // User is an admin, allow access
+      next();
+    } else {
+      // User is not an admin, deny access
+      return res.status(403).json({ error: "Forbidden" });
+    }
+  } catch (error) {
+    return res.status(400).json({ error });
+  }
 };
 
 /* GET signup. */
@@ -170,14 +192,19 @@ exports.post_login = (req, res, next) => {
       if (err) {
         return next(err);
       }
-      // Sign a jwt token
-      const token = jwt.sign(
-        { id: user.id },
-        process.env.JWT_SECRET_TOKEN_KEY,
-        { expiresIn: "1h" }
-      );
+      // Include isAdmin property in the user object
+      const payload = {
+        user: {
+          id: user._id,
+          isAdmin: user.is_admin,
+        },
+      };
+      // Sign a jwt token with the payload
+      const token = jwt.sign(payload, process.env.JWT_SECRET_TOKEN_KEY, {
+        expiresIn: "1h",
+      });
       // Return the user and token
-      return res.json({ user, token });
+      return res.status(200).json({ user, token });
     });
   })(req, res, next);
 };

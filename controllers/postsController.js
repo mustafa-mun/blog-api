@@ -47,7 +47,7 @@ exports.posts_post = [
       // Form data is valid create new post with form data.
       const post = new Posts({
         title: req.body.title,
-        author: req.user.id,
+        author: req.jwt_token.user.id,
         content: req.body.content,
         tags: req.body.tags,
       });
