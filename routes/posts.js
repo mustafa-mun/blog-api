@@ -39,7 +39,7 @@ router.post(
 router.post(
   "/:postId/comments/like",
   authController.authenticateToken,
-  commentsController.comments_post
+  commentsController.comments_like_post
 );
 // PUT REQUEST (PROTECTED ROUTE)
 router.put(
