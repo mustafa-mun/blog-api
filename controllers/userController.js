@@ -20,28 +20,6 @@ exports.users_get = (req, res, next) => {
     });
   });
 };
-// POST REQUEST
-exports.users_post = (req, res, next) => {
-  // This request needs html form for req.body
-  async function createUser() {
-    try {
-      const user = new User({
-        name: req.body.name,
-      });
-      const result = await user.save();
-      return res.json({
-        user: result,
-      });
-    } catch (error) {
-      res.status(404).json({
-        error,
-        status: 404,
-      });
-    }
-  }
-
-  createUser();
-};
 // PUT REQUEST
 exports.users_update = [
   body("first_name", "firstname can't be empty")
