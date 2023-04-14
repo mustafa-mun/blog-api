@@ -10,8 +10,6 @@ const ExtractJWT = passportJWT.ExtractJwt;
 require("dotenv").config();
 const { body, validationResult } = require("express-validator");
 
-/* USE REFRESH TOKENS! */
-
 passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
