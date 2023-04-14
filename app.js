@@ -9,23 +9,15 @@ const cors = require("cors");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 require("dotenv").config();
-
-const securityDefinition = {
-  bearerAuth: {
-    type: "http",
-    scheme: "bearer",
-    bearerFormat: "JWT",
-  },
-};
-
 // Initialize swagger-jsdoc
 const options = {
   swaggerDefinition: {
     openapi: "3.0.0",
     info: {
-      title: "My API",
+      title: "Blog API",
       version: "1.0.0",
-      description: "API documentation for My Blog API",
+      description:
+        "Here is the API documentation for My Blog API. Please note that authentication is required and you must obtain a token by logging in before making requests to protected routes.",
       contact: {
         name: "Mustafa",
         email: "beginnerdev7@gmail.com",
