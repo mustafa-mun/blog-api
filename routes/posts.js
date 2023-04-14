@@ -809,11 +809,10 @@ const authController = require("../controllers/authController");
 router.get("/", postsController.posts_get);
 // POST REQUEST (PROTECTED ROUTE)
 router.post("/", authController.authenticateToken, postsController.posts_post);
-// PUT REQUEST (EXTRA PROTECTED ROUTE)
+// PUT REQUEST (PROTECTED ROUTE)
 router.put(
   "/:postId",
   authController.authenticateToken,
-  authController.isAdmin,
   postsController.posts_update
 );
 router.put(
@@ -824,11 +823,10 @@ router.put(
 );
 // PUT REQUEST (NOT PROTECTED)
 router.put("/:postId/like", postsController.posts_like_update);
-// DELETE REQUEST (EXTRA PROTECTED ROUTE)
+// DELETE REQUEST (PROTECTED ROUTE)
 router.delete(
   "/:postId",
   authController.authenticateToken,
-  authController.isAdmin,
   postsController.posts_delete
 );
 

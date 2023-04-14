@@ -97,25 +97,37 @@ exports.posts_update = [
     } else {
       // Form data is valid
       try {
-        // Find post with it's id and update it with new data.
-        const result = await Posts.findByIdAndUpdate(
-          req.params.postId,
-          {
-            title: req.body.title,
-            content: req.body.content,
-            updated_at: Date.now(),
-            tags: req.body.tags,
-          },
-          { new: true }
-        );
-        // Handle if post is not found
-        if (!result) {
-          return res.status(404).json({
-            error: "Post not found!",
-          });
+        const user = req.jwt_token.user;
+        const post = await Posts.findOne({ _id: req.params.postId });
+
+        // Check if user is an admin or the owner of the post
+        if (
+          user.isAdmin ||
+          JSON.stringify(user.id) === JSON.stringify(post.author)
+        ) {
+          // Find post with it's id and update it with new data.
+          const result = await Posts.findByIdAndUpdate(
+            req.params.postId,
+            {
+              title: req.body.title,
+              content: req.body.content,
+              updated_at: Date.now(),
+              tags: req.body.tags,
+            },
+            { new: true }
+          );
+          // Handle if post is not found
+          if (!result) {
+            return res.status(404).json({
+              error: "Post not found!",
+            });
+          }
+          // Post updated, return updated post
+          return res.status(200).json({ post: result });
+        } else {
+          // User is not an admin and trying to update another ones post.
+          return res.status(401).json({ error: "Unauthorized" });
         }
-        // Post updated, return updated post
-        return res.status(200).json({ post: result });
       } catch (error) {
         // Handle error
         return res.status(400).json({ error });
@@ -185,18 +197,30 @@ exports.posts_update_publish = async (req, res, next) => {
 // DELETE REQUEST
 exports.posts_delete = async (req, res) => {
   try {
-    // Find post with it's id and delete it.
-    const result = await Posts.findOneAndDelete({ _id: req.params.postId });
-    if (!result) {
-      // Handle post not found
-      return res.status(404).json({
-        error: "Post not found!",
+    const user = req.jwt_token.user;
+    const post = await Posts.findOne({ _id: req.params.postId });
+
+    // Check if user is an admin or the owner of the post
+    if (
+      user.isAdmin ||
+      JSON.stringify(user.id) === JSON.stringify(post.author)
+    ) {
+      // Find post with it's id and delete it.
+      const result = await Posts.findOneAndDelete({ _id: req.params.postId });
+      if (!result) {
+        // Handle post not found
+        return res.status(404).json({
+          error: "Post not found!",
+        });
+      }
+      // Post is deleted, return the deleted post
+      return res.status(200).json({
+        deleted_post: result,
       });
+    } else {
+      // User is not an admin and trying to delete another ones post.
+      return res.status(401).json({ error: "Unauthorized" });
     }
-    // Post is deleted, return the deleted post
-    return res.status(200).json({
-      deleted_post: result,
-    });
   } catch (error) {
     // Handle error
     return res.status(400).json({
