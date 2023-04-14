@@ -27,7 +27,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: "https://blog-api-production-18c9.up.railway.app/",
       },
     ],
   },
