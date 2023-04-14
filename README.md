@@ -2,7 +2,7 @@
 # Blog API
 
 This project is the part of [nodejs](https://www.theodinproject.com/lessons/nodejs-blog-api) course on the odin projects full stack javascript cirriculum.
-This project uses [SwaggerUi](https://swagger.io/) for documenting.
+This project uses [SwaggerUi](https://swagger.io/) for API Documentation.
 
 ## Screenshot
 
