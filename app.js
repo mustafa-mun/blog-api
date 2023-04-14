@@ -25,10 +25,10 @@ const options = {
     info: {
       title: "My API",
       version: "1.0.0",
-      description: "API documentation for My API",
+      description: "API documentation for My Blog API",
       contact: {
-        name: "Your Name",
-        email: "your.email@example.com",
+        name: "Mustafa",
+        email: "beginnerdev7@gmail.com",
       },
     },
     servers: [
