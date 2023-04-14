@@ -8,6 +8,8 @@ const logger = require("morgan");
 const cors = require("cors");
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
+const compression = require("compression");
+const helmet = require("helmet");
 require("dotenv").config();
 // Initialize swagger-jsdoc
 const options = {
@@ -39,6 +41,15 @@ const userRouter = require("./routes/users");
 const postsRouter = require("./routes/posts");
 
 const app = express();
+// Set up rate limiter: maximum of twenty requests per minute
+var RateLimit = require("express-rate-limit");
+var limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20,
+});
+// Apply rate limiter to all requests
+app.use(limiter);
+
 app.use(cors());
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
@@ -59,6 +70,8 @@ app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(compression());
+app.use(helmet());
 
 app.use("/", indexRouter);
 app.use("/users", userRouter);
