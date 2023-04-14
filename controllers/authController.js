@@ -132,7 +132,7 @@ exports.post_signup = [
 
     if (!errors.isEmpty()) {
       // There are errors
-      return res.json({
+      return res.status(400).json({
         errors: errors.array(),
       });
     }
