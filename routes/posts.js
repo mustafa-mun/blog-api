@@ -351,25 +351,6 @@ const authController = require("../controllers/authController");
  *           type: string
  *         required: true
  *         description: The id of the post to publish.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *                 description: The title of the post.
- *                 example: My programming journey so far..
- *               content:
- *                 type: string
- *                 description: The body content of the post.
- *                 example: I was that kind of person who started to learn code just by having one motive to make money because...
- *               tags:
- *                 type: array
- *                 description: Array of appropriate tags.
- *                 example: ["programming", "journey"]
  *     responses:
  *       200:
  *         description: The published post
