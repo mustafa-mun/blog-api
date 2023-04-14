@@ -6,7 +6,41 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
 require("dotenv").config();
+
+const securityDefinition = {
+  bearerAuth: {
+    type: "http",
+    scheme: "bearer",
+    bearerFormat: "JWT",
+  },
+};
+
+// Initialize swagger-jsdoc
+const options = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
+    info: {
+      title: "My API",
+      version: "1.0.0",
+      description: "API documentation for My API",
+      contact: {
+        name: "Your Name",
+        email: "your.email@example.com",
+      },
+    },
+    servers: [
+      {
+        url: "http://localhost:3000",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+
+const specs = swaggerJsDoc(options);
 
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/users");
@@ -14,6 +48,7 @@ const postsRouter = require("./routes/posts");
 
 const app = express();
 app.use(cors());
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
